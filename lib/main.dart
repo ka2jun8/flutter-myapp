@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/note.dart';
 import 'package:my_app/page.dart';
+import 'package:my_app/webview.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,8 +29,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final _pageWidgets = [
+    WebViewPage(),
     Note(),
-    Page(color: Colors.blue, title: 'Album'),
     Page(color: Colors.orange, title: 'Chat'),
   ];
 
@@ -45,7 +46,7 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
-          BottomNavigationBarItem(icon: Icon(Icons.photo_album), title: Text('Album')),
+          BottomNavigationBarItem(icon: Icon(Icons.photo_album), title: Text('Note')),
           BottomNavigationBarItem(icon: Icon(Icons.chat), title: Text('Chat')),
         ],
         currentIndex: _currentIndex,
