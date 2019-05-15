@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/create.dart';
-import 'package:my_app/detail.dart';
-import 'package:my_app/entity/memo.dart';
+import 'package:my_app/note.dart';
+import 'package:my_app/page.dart';
 
 void main() => runApp(MyApp());
 
@@ -20,7 +19,6 @@ class MyApp extends StatelessWidget {
 
 class Home extends StatefulWidget {
   Home({Key key, this.title}) : super(key: key);
-
   final String title;
 
   @override
@@ -28,14 +26,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Memo> memos = new List<Memo>();
-  final _biggerFont = const TextStyle(
-    color: Colors.black,
-    fontSize: 18.0,
-  );
+  int _currentIndex = 0;
+  final _pageWidgets = [
+    Note(),
+    Page(color: Colors.blue, title: 'Album'),
+    Page(color: Colors.orange, title: 'Chat'),
+  ];
 
-  // void _addNote() {
-  // }
+  void _onItemTapped(int index) => setState(() => _currentIndex = index);
 
   @override
   Widget build(BuildContext context) {
@@ -43,54 +41,18 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: _list(),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add Note',
-        child: Icon(Icons.add),
-        onPressed: () {
-          Memo newMemo = Memo('','');
-          memos.add(newMemo);
-          Navigator.push(context, MaterialPageRoute<Null>(
-            settings: const RouteSettings(name: "/create"),
-            builder: (BuildContext context) => Create(newMemo)
-          ));
-        },
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
-
-  Widget _list() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16.0),
-      itemCount: memos.length,
-      itemBuilder: (context, i) {
-        final item = memos[i];
-
-        return Dismissible(
-          key: Key(item.title),
-          onDismissed: (direction) {
-            memos.removeAt(i);
-
-            Scaffold.of(context).showSnackBar(
-              SnackBar(content: Text("Memo dismissed"))
-            );
-          },
-          background: Container(color: Colors.red),
-          child: ListTile(
-            leading: Icon(Icons.wb_sunny),
-            title: Text(
-              item.title,
-            ),
-            trailing: Icon(Icons.keyboard_arrow_right),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute<Null>(
-                settings: const RouteSettings(name: "/detail"),
-                builder: (BuildContext context) => Detail(item),
-              ));
-            },
-          ),
-        );
-      },
+      body: _pageWidgets.elementAt(_currentIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
+          BottomNavigationBarItem(icon: Icon(Icons.photo_album), title: Text('Album')),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), title: Text('Chat')),
+        ],
+        currentIndex: _currentIndex,
+        fixedColor: Colors.blueAccent,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+      ),
     );
   }
 }
